@@ -1,0 +1,41 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+
+class "Reader (读者)" as Reader {
+  - readerId: String
+  - name: String
+  - maxBorrowLimit: int
+  + borrowBook(isbn: String): boolean
+  + returnBook(isbn: String): boolean
+}
+
+class "Book (图书)" as Book {
+  - isbn: String
+  - title: String
+  - author: String
+  - status: BookStatus
+  + checkAvailability(): boolean
+}
+
+class "BorrowRecord (借阅记录)" as BorrowRecord {
+  - recordId: String
+  - borrowDate: Date
+  - dueDate: Date
+  - returnDate: Date
+  + calculateFine(): double
+}
+
+
+enum "BookStatus (图书状态)" as BookStatus {
+  AVAILABLE (可借)
+  BORROWED (已借出)
+  LOST (遗失)
+}
+
+Reader "1" -- "0..*" BorrowRecord : 产生 >
+BorrowRecord "0..*" -- "1" Book : 关联 >
+Book *--> "1" BookStatus : 拥有 >
+
+@enduml

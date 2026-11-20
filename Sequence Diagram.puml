@@ -1,0 +1,41 @@
+@startuml
+
+autonumber
+
+
+actor "读者" as Reader
+participant "前端界面" as UI
+participant "借阅控制器" as Controller
+participant "图书实体" as Book
+participant "借阅记录" as Record
+
+Reader -> UI : 点击“借阅”按钮
+UI -> Controller : 申请借阅(读者ID, 图书ISBN)
+activate Controller
+Controller -> Controller : 验证读者借阅资格
+
+alt 读者无借阅资格
+    Controller --> UI : 提示“借阅资格不足”
+    deactivate Controller
+else 读者资格正常
+    Controller -> Book : 检查图书状态()
+    activate Book
+    alt 图书不可借
+        Book --> Controller : 返回“不可借”状态
+        deactivate Book
+        Controller --> UI : 提示“图书已被借出”
+        deactivate Controller
+    else 图书可借
+        Book --> Controller : 返回“可借”状态
+        deactivate Book
+        Controller -> Record : 创建借阅记录(读者ID, ISBN)
+        activate Record
+        Record --> Controller : 记录创建成功
+        deactivate Record
+        Controller -> Book : 更新图书状态(设为已借出)
+        Controller --> UI : 提示“借阅成功”
+        deactivate Controller
+    end
+end
+
+@enduml

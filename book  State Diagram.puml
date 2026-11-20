@@ -1,0 +1,10 @@
+@startuml
+[*] --> Available : 入库
+Available --> Borrowed : 借出
+Borrowed --> Available : 归还
+Borrowed --> Overdue : 超期未还
+Overdue --> Available : 归还并缴纳罚金
+Available --> Lost : 遗失
+Overdue --> Lost : 确认遗失
+Lost --> [*]
+@enduml
